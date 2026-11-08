@@ -3,8 +3,11 @@ cmake_minimum_required(VERSION 3.16)
 # Monorepo-aware version string. IDF's default `git describe` would grab the
 # nearest tag of ANY kind (including hw-* tags), so pin it to fw-v* tags.
 # Evaluated at configure time: run `idf.py reconfigure` after tagging.
+# `-c safe.directory=*`: CI/docker containers run as a different uid than the
+# checkout owner, and git then refuses to describe ("dubious ownership").
+# Read-only command on our own checkout, so the override is safe here.
 execute_process(
-    COMMAND git describe --tags --match "fw-v*" --dirty --always
+    COMMAND git -c safe.directory=* describe --tags --match "fw-v*" --dirty --always
     WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
     OUTPUT_VARIABLE FW_GIT_DESC
     OUTPUT_STRIP_TRAILING_WHITESPACE

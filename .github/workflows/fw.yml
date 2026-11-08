@@ -32,9 +32,8 @@ jobs:
           esp_idf_version: v5.4.2
           target: esp32s3
           path: fw
-          # Container runs as a different uid; without safe.directory git
-          # refuses to describe and the version falls back to 0.0.0-nogit.
-          command: git config --global --add safe.directory '*' && idf.py build
+          # Default command (idf.py build). The container-uid / git
+          # safe.directory issue is handled inside fw/CMakeLists.txt.
 
       - name: Upload binaries
         uses: actions/upload-artifact@v4
