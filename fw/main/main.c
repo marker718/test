@@ -6,6 +6,7 @@
 #include <inttypes.h>
 #include <stdio.h>
 
+#include "doa_bench.h"
 #include "esp_app_desc.h"
 #include "esp_chip_info.h"
 #include "esp_flash.h"
@@ -40,6 +41,7 @@ static void log_identity(void)
 void app_main(void)
 {
     log_identity();
+    doa_bench_run();
 
     uint32_t tick = 0;
     for (;;) {

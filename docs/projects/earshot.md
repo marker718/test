@@ -73,8 +73,10 @@ Per frame: 2 complex FFTs (pack 2 real channels per complex FFT), 6 cross
 spectra + PHAT normalize, 6 inverse FFTs. Roughly 8× 1024-pt complex FFT
 per frame, ~750 FFT/s. esp-dsp's S3-optimized fc32 FFT should land well under
 1 ms each at 240 MHz, so the DOA path should fit in a fraction of core 1.
-**Treat that as a guess until it's benchmarked**: measure cycles with
-`esp_cpu_get_cycle_count()` around the real pipeline at G1.
+**Treat that as a guess until it's benchmarked.** The firmware now runs a boot-time benchmark
+(`fw/main/doa_bench.c`, `CONFIG_APP_DOA_BENCH`) that logs cycles/frame and the
+real-time load at 93.75 frames/s. First flash on silicon answers this. QEMU
+numbers don't count.
 
 ## Hardware
 
@@ -161,7 +163,8 @@ regression-test bearing accuracy in CI without hardware.
 
 | Failure | Symptom | Mitigation |
 |---|---|---|
-| Inter-channel skew | Constant bearing bias, worse on some pairs | Shared PDM clock; per-channel delay trim stored in NVS from G1 calibration |
+| Inter-channel skew | Constant bearing bias, worse on some pairs | Shared PDM clock; per-channel delay trim stored in NVS from G1 calibration (implemented: 1.5-sample skew gives 7.5° max error raw, 0.46° calibrated) |
+| Source above the array plane | TDOAs shrink by cos(el). An in-plane-only SRP misses entirely above ~45° (105° RMS at 60°, found by the synthetic harness) | **Implemented**: SRP over azimuth × cos(el) scale rings down to 70°; 60° source gives 0.38° RMS. See `fw/components/doa/README.md` |
 | Desk reflection | Biased or doubled peaks, elevation leaking into azimuth | PHAT weighting; gate on the first 2–5 ms after onset (precedence effect); raise the array on a stalk |
 | Room reverb | Bearings jump around for sustained sounds | Onset gating for phase 1; coherence-weighted SRP + tracker for phase 2 |
 | Wi-Fi TX bursts on mic rail | Periodic ~10 Hz junk (beacon interval) or bursts during streaming | Separate mic LDO + ferrite; verify at G3 with streaming on vs. off |

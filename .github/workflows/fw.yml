@@ -8,6 +8,17 @@ on:
   workflow_dispatch:
 
 jobs:
+  host-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S fw/components/doa/test_host -B build/doa-host -DCMAKE_BUILD_TYPE=RelWithDebInfo
+      - name: Build
+        run: cmake --build build/doa-host -j
+      - name: Test (ASan + UBSan)
+        run: ctest --test-dir build/doa-host --output-on-failure
+
   build:
     runs-on: ubuntu-latest
     steps:

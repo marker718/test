@@ -1,0 +1,17 @@
+menu "Application"
+
+    config APP_DOA_BENCH
+        bool "Run DOA benchmark at boot"
+        default y
+        help
+            Runs the doa estimator on a synthetic 4-channel frame at boot and
+            logs cycles per frame plus the implied real-time CPU load at the
+            EARSHOT frame rate (1024-sample frames, 50% overlap, 48 kHz).
+
+    config APP_DOA_BENCH_FRAMES
+        int "Benchmark iterations"
+        depends on APP_DOA_BENCH
+        default 50
+        range 1 1000
+
+endmenu

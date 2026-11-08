@@ -1,4 +1,6 @@
 # ---- Firmware (ESP-IDF) ----
+# Host-side builds, e.g. build/doa-host
+/build/
 fw/build/
 fw/sdkconfig
 fw/sdkconfig.old
