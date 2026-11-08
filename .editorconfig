@@ -1,0 +1,21 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.{yml,yaml,json,md}]
+indent_size = 2
+
+[{CMakeLists.txt,*.cmake}]
+indent_size = 4
+
+# KiCad writes its own formatting; don't let editors touch it.
+[*.{kicad_pro,kicad_sch,kicad_pcb,kicad_sym,kicad_mod}]
+indent_style = unset
+indent_size = unset
+trim_trailing_whitespace = false

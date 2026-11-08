@@ -1,0 +1,18 @@
+# Source of truth for build config. `sdkconfig` is generated and gitignored.
+# Change settings with `idf.py menuconfig`, then copy the relevant lines here
+# (or run `idf.py save-defconfig` and review the diff).
+
+CONFIG_IDF_TARGET="esp32s3"
+
+# Clocks / RTOS
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240=y
+CONFIG_FREERTOS_HZ=1000
+
+# Console on UART0, with USB-Serial-JTAG as secondary so both a DevKitC
+# UART bridge and the native USB port show logs.
+CONFIG_ESP_CONSOLE_UART_DEFAULT=y
+CONFIG_ESP_CONSOLE_SECONDARY_USB_SERIAL_JTAG=y
+
+# Flash size intentionally left at IDF default (2 MB) so the skeleton boots
+# on any S3 module. Bump to match the module once the board is chosen
+# (EARSHOT spec: ESP32-S3-WROOM-1-N16R8 -> 16 MB flash, 8 MB octal PSRAM).

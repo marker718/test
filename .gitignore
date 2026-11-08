@@ -1,0 +1,33 @@
+# ---- Firmware (ESP-IDF) ----
+fw/build/
+fw/sdkconfig
+fw/sdkconfig.old
+fw/managed_components/
+# dependencies.lock IS committed: it pins component-manager versions.
+
+# ---- Hardware (KiCad) ----
+hw/**/*-backups/
+hw/**/*.kicad_prl
+hw/**/fp-info-cache
+hw/**/*.lck
+hw/**/~*.lck
+hw/**/_autosave-*
+hw/**/*.bak
+hw/**/fab/
+hw/**/gerbers/
+hw/**/*-erc.rpt
+hw/**/*-drc.rpt
+
+# ---- Python / tooling ----
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# ---- Editors / OS ----
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+.DS_Store
+Thumbs.db

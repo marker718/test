@@ -1,0 +1,23 @@
+* text=auto eol=lf
+
+# KiCad sources are S-expressions: diffable text, force LF so Windows
+# checkouts don't produce whole-file diffs.
+*.kicad_pro   text eol=lf
+*.kicad_sch   text eol=lf
+*.kicad_pcb   text eol=lf
+*.kicad_sym   text eol=lf
+*.kicad_mod   text eol=lf
+*.kicad_dru   text eol=lf
+*.kicad_wks   text eol=lf
+sym-lib-table text eol=lf
+fp-lib-table  text eol=lf
+
+# Binary blobs
+*.step  binary
+*.stp   binary
+*.wrl   binary
+*.pdf   binary
+*.png   binary
+*.jpg   binary
+*.wav   binary
+*.bin   binary

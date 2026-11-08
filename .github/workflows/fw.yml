@@ -1,0 +1,39 @@
+name: fw
+
+on:
+  push:
+    paths: ["fw/**", ".github/workflows/fw.yml"]
+  pull_request:
+    paths: ["fw/**", ".github/workflows/fw.yml"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # tags needed for git describe -> PROJECT_VER
+
+      - name: Build (ESP-IDF v5.4.2, esp32s3)
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: v5.4.2
+          target: esp32s3
+          path: fw
+          # Container runs as a different uid; without safe.directory git
+          # refuses to describe and the version falls back to 0.0.0-nogit.
+          command: git config --global --add safe.directory '*' && idf.py build
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: fw-${{ github.sha }}
+          path: |
+            fw/build/*.bin
+            fw/build/*.elf
+            fw/build/*.map
+            fw/build/bootloader/bootloader.bin
+            fw/build/partition_table/partition-table.bin
+            fw/build/flasher_args.json
+          if-no-files-found: error

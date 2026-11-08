@@ -1,0 +1,44 @@
+name: hw
+
+on:
+  push:
+    paths: ["hw/**", ".github/workflows/hw.yml"]
+  pull_request:
+    paths: ["hw/**", ".github/workflows/hw.yml"]
+  workflow_dispatch:
+
+jobs:
+  erc-drc:
+    runs-on: ubuntu-latest
+    container:
+      image: kicad/kicad:9.0
+      options: --user root
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: ERC + DRC on every board project
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          export HOME=/root
+          projects=(hw/*/*.kicad_pro)
+          if [ ${#projects[@]} -eq 0 ]; then
+            echo "No KiCad projects under hw/ yet. Nothing to check."
+            exit 0
+          fi
+          fail=0
+          for pro in "${projects[@]}"; do
+            dir=$(dirname "$pro"); name=$(basename "$pro" .kicad_pro)
+            echo "::group::$name"
+            if [ -f "$dir/$name.kicad_sch" ]; then
+              kicad-cli sch erc --exit-code-violations --severity-error \
+                -o "$dir/$name-erc.rpt" "$dir/$name.kicad_sch" || { cat "$dir/$name-erc.rpt"; fail=1; }
+            fi
+            if [ -f "$dir/$name.kicad_pcb" ]; then
+              kicad-cli pcb drc --exit-code-violations --severity-error --schematic-parity \
+                -o "$dir/$name-drc.rpt" "$dir/$name.kicad_pcb" || { cat "$dir/$name-drc.rpt"; fail=1; }
+            fi
+            echo "::endgroup::"
+          done
+          exit $fail
